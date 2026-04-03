@@ -9,17 +9,34 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onImageSelected, disable
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
 
-  const handleFile = (file: File) => {
-    if (!file.type.startsWith('image/')) return;
+  const compressImage = (file: File, maxWidth = 800, quality = 0.8): Promise<{ base64: string; previewUrl: string }> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let { width, height } = img;
+        if (width > maxWidth) {
+          height = (height * maxWidth) / width;
+          width = maxWidth;
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d')!;
+        ctx.drawImage(img, 0, 0, width, height);
+        const dataUrl = canvas.toDataURL('image/jpeg', quality);
+        const base64 = dataUrl.split(',')[1];
+        URL.revokeObjectURL(url);
+        resolve({ base64, previewUrl: dataUrl });
+      };
+      img.src = url;
+    });
+  };
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const result = reader.result as string;
-      // Extract base64 part only for the API
-      const base64Data = result.split(',')[1];
-      onImageSelected(base64Data, result);
-    };
-    reader.readAsDataURL(file);
+  const handleFile = async (file: File) => {
+    if (!file.type.startsWith('image/')) return;
+    const { base64, previewUrl } = await compressImage(file);
+    onImageSelected(base64, previewUrl);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
