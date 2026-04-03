@@ -116,7 +116,7 @@ export default function App() {
         </main>
 
         <footer className="mt-20 text-center text-stone-400 text-xs py-8 border-t border-stone-200/50">
-           <p>© {new Date().getFullYear()} Scent & Soul AI. Powered by Gemini 2.5 Flash.</p>
+           <p>© {new Date().getFullYear()} Scent & Soul AI. Powered by Gemini AI.</p>
         </footer>
       </div>
     </div>
