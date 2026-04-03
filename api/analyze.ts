@@ -63,14 +63,15 @@ export default async function handler(req: Request) {
     }
 
     // Use Poe's OpenAI-compatible API with Claude model for best image analysis
-    const response = await fetch('https://api.poe.com/chat/completions', {
+    const response = await fetch('https://api.poe.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'Claude-4-Opus',
+        model: 'Claude-Sonnet-4.5',
+        stream: false,
         messages: [
           {
             role: 'system',
