@@ -1,6 +1,7 @@
 
 export const config = {
   runtime: 'edge',
+  maxDuration: 60,
 };
 
 const SYSTEM_INSTRUCTION = `
